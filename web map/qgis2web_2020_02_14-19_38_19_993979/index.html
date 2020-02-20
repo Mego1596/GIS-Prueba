@@ -78,6 +78,7 @@
                 </td>
             </tr>
         </table>
+        <img src="" alt="" id="img">
         <script src="js/qgis2web_expressions.js"></script>
         <script src="js/leaflet.js"></script>
         <script src="js/leaflet.rotatedMarker.js"></script>
@@ -103,6 +104,7 @@
         <script src="data/Usulutan_13.js"></script>
         <script src="js/leaflet.extra-markers.min.js"></script>
         <script src="js/leaflet.markercluster.js"></script>
+        <script src='https://api.mapbox.com/mapbox.js/plugins/leaflet-image/v0.0.4/leaflet-image.js'></script>
         <script>
         var json_bd = {
             "ahuachapan": {
@@ -179,9 +181,7 @@
         var pais_completo = true;
         var color_no_seleccionado = "#848484";
 
-        var map = L.map('map', {
-            zoomControl:true, maxZoom:28, minZoom:1
-        }).fitBounds([[11.60198540893619,-91.09635936032133],[14.922833794083704,-86.21578951924415]]);
+        var map = L.map('map', {zoomControl:true, maxZoom:28, minZoom:1,preferCanvas:true}).fitBounds([[11.60198540893619,-91.09635936032133],[14.922833794083704,-86.21578951924415]]);
         var hash = new L.Hash(map);
         map.attributionControl.setPrefix('<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a> &middot; <a href="https://leafletjs.com" title="A JS library for interactive maps">Leaflet</a> &middot; <a href="https://qgis.org">QGIS</a>');
         var bounds_group = new L.featureGroup([]);
@@ -761,7 +761,16 @@
         markers.addLayer(L.marker([13.692573, -89.241904], {icon: iconMarker,title:"Museo de Arte de El Salvador"}).bindPopup("Museo Nacional"));
         markers.addLayer(L.marker([13.722752, -89.211607], {icon: iconMarker,title:"Escuela Miguel Pinto"}).bindPopup("Escuela Publica"));
         map.addLayer(markers);
-        setBounds()
+        
+        leafletImage(map, function(err, canvas) {
+            // now you have canvas
+            // example thing to do with that canvas:
+            var img = document.getElementById('img')
+            var dimensions = map.getSize();
+            img.width = dimensions.x;
+            img.height = dimensions.y;
+            img.src = canvas.toDataURL();
+        });
         </script>
 
     </body>
