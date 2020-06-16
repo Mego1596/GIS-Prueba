@@ -13,7 +13,7 @@
         <link rel="stylesheet" type="text/css" href="css/MarkerCluster.Default.css">
         <style>
         #map {
-            width: 1500px;
+            width: 1000px;
             height: 700px;
         }
         </style>
@@ -80,7 +80,7 @@
         </table>
         <button onclick="mapToCanvas()">Prueba de renderizado</button>
         <img src="" alt="#" id="img">
-        <canvas id="can" width="1500" height="900" style="display: block;border: 1px solid black"></canvas>
+        <canvas id="can" width="1000" height="700" style="display: none;border: 1px solid black"></canvas>
         <script src="js/qgis2web_expressions.js"></script>
         <script src="js/leaflet.js"></script>
         <script src="js/leaflet.rotatedMarker.js"></script>
@@ -179,9 +179,95 @@
             }
 
         }
-        var pais_completo = true;
-        var color_no_seleccionado = "#848484";
+        var json_instituciones ={
+            "colegio_1": {
+                "nombre": 'Instituto Nacional Colonia Valle del Sol',
+                "direccion":'B Pasaje9 Urbanizacion Valle Del Sol Apopa, Apopa',
+                "longitud": -89.189993,
+                "latitud": 13.821250,
+            },
+            "colegio_2": {
+                "nombre": 'Colegio de Las Americas',
+                "direccion":'Calle Central Cornelio Sierra Pte., Atiquizaya',
+                "longitud": -89.757094,
+                "latitud": 13.975643, 
+            },
+            "colegio_3": {
+                "nombre": 'Colegio Basilea',
+                "direccion":'2da av. norte entre 12 y 14 calle poniente porcion a callejon la ronda',
+                "longitud": -89.556835,
+                "latitud": 13.999491, 
+            },
+            "colegio_4": {
+                "nombre": 'Instituto Nacional de Sonzacate',
+                "direccion":'Avenida las palmeras block 6 Urbanizacion zedan poniente',
+                "longitud": -89.717225,
+                "latitud": 13.731959, 
+            },
+            "colegio_5": {
+                "nombre": 'Instituto Nacional de Sonzacate',
+                "direccion":'Avenida las palmeras block 6 Urbanizacion zedan poniente',
+                "longitud": -89.287412,
+                "latitud": 13.677776,
+            },
+            "colegio_6": {
+                "nombre": 'Colegio Adventista Citala Chalatenango',
+                "direccion":'Avenida Virgilio Rodezno, entrada al pueblo',
+                "longitud": -89.214410,
+                "latitud": 14.371151,
+            },
+            "colegio_7": {
+                "nombre": 'Colegio Maria Goretti',
+                "direccion":'Sexta av. Norte, Barrio los remedios numero 7',
+                "longitud": -88.624861,
+                "latitud": 13.876073, 
+            },
 
+            "colegio_8": {
+                "nombre": 'Colegio Leon Siguenza',
+                "direccion":'Octava calle poninete numero 28 - barrio san Juan',
+                "longitud": -88.933017,
+                "latitud": 13.717926, 
+            },
+            "colegio_9": {
+                "nombre": 'Colegio San Juan Bautista',
+                "direccion":'Avenida San José, barrio el centro, Olocuilta, La Paz, El Salvador., Olocuilta',
+                "longitud": -89.117561,
+                "latitud": 13.569110,
+            },
+            "colegio_10": {
+                "nombre": 'Colegio San Pio X',
+                "direccion":'200 metro al sur oriente del puente salida al canton ocote',
+                "longitud": -87.811979,
+                "latitud": 13.810899, 
+            },
+            "colegio_11": {
+                "nombre": 'Colegio Adventista de Jocoro',
+                "direccion":'CALLE ALBERTO MASFERRER N°8 BARRIO EL CENTRO Jocoro Morazán, Jocoro',
+                "longitud": -88.026238,
+                "latitud": 13.613327, 
+            },
+            "colegio_12": {
+                "nombre": 'Colegio Jesus De Nazareht',
+                "direccion":'8va calle poniente N°504',
+                "longitud": -88.180911,
+                "latitud": 13.484860, 
+            },
+            "colegio_13": {
+                "nombre": 'Colegio Eucarístico',
+                "direccion":'1A Calle Poniente, San Vicente',
+                "longitud": -88.787769,
+                "latitud": 13.645185,  
+            },
+            "colegio_14": {
+                "nombre": 'Colegio San Agustín',
+                "direccion":'Kilometro 115, carretera litoral Canton ojo de agua, Usulután',
+                "longitud": -88.461212 ,
+                "latitud": 13.343166, 
+            },
+        }
+
+        var swatch_colors = ["#848484",'#220A29','#4C0B5F','#6A0888','#8904B1','#A901DB','#BF00FF','#D358F7','#DA81F5','#F2E0F7','#F8EFFB'];
         var map = L.map('map', {
             zoomControl:true, maxZoom:28, minZoom:1,preferCanvas:true
         }).fitBounds([[11.60198540893619,-91.09635936032133],[14.922833794083704,-86.21578951924415]]);
@@ -255,7 +341,7 @@
                 weight: 1.0, 
                 fill: true,
                 fillOpacity: 1,
-                fillColor: color_no_seleccionado,
+                fillColor: swatch_colors[0],
                 interactive: true,
             }
         }
@@ -285,7 +371,7 @@
                 weight: 1.0, 
                 fill: true,
                 fillOpacity: 1,
-                fillColor: color_no_seleccionado,
+                fillColor: swatch_colors[0],
                 interactive: true,
             }
         }
@@ -314,7 +400,7 @@
                 weight: 1.0, 
                 fill: true,
                 fillOpacity: 1,
-                fillColor: color_no_seleccionado,
+                fillColor: swatch_colors[0],
                 interactive: true,
             }
         }
@@ -343,7 +429,7 @@
                 weight: 1.0, 
                 fill: true,
                 fillOpacity: 1,
-                fillColor: color_no_seleccionado,
+                fillColor: swatch_colors[0],
                 interactive: true,
             }
         }
@@ -372,7 +458,7 @@
                 weight: 1.0, 
                 fill: true,
                 fillOpacity: 1,
-                fillColor: color_no_seleccionado,
+                fillColor: swatch_colors[0],
                 interactive: true,
             }
         }
@@ -401,7 +487,7 @@
                 weight: 1.0, 
                 fill: true,
                 fillOpacity: 1,
-                fillColor: color_no_seleccionado,
+                fillColor: swatch_colors[0],
                 interactive: true,
             }
         }
@@ -430,7 +516,7 @@
                 weight: 1.0, 
                 fill: true,
                 fillOpacity: 1,
-                fillColor: color_no_seleccionado,
+                fillColor: swatch_colors[0],
                 interactive: true,
             }
         }
@@ -459,7 +545,7 @@
                 weight: 1.0, 
                 fill: true,
                 fillOpacity: 1,
-                fillColor: color_no_seleccionado,
+                fillColor: swatch_colors[0],
                 interactive: true,
             }
         }
@@ -488,7 +574,7 @@
                 weight: 1.0, 
                 fill: true,
                 fillOpacity: 1,
-                fillColor: color_no_seleccionado,
+                fillColor: swatch_colors[0],
                 interactive: true,
             }
         }
@@ -517,7 +603,7 @@
                 weight: 1.0, 
                 fill: true,
                 fillOpacity: 1,
-                fillColor: color_no_seleccionado,
+                fillColor: swatch_colors[0],
                 interactive: true,
             }
         }
@@ -546,7 +632,7 @@
                 weight: 1.0, 
                 fill: true,
                 fillOpacity: 1,
-                fillColor: color_no_seleccionado,
+                fillColor: swatch_colors[0],
                 interactive: true,
             }
         }
@@ -575,7 +661,7 @@
                 weight: 1.0, 
                 fill: true,
                 fillOpacity: 1,
-                fillColor: color_no_seleccionado,
+                fillColor: swatch_colors[0],
                 interactive: true,
             }
         }
@@ -604,7 +690,7 @@
                 weight: 1.0, 
                 fill: true,
                 fillOpacity: 1,
-                fillColor: color_no_seleccionado,
+                fillColor: swatch_colors[0],
                 interactive: true,
             }
         }
@@ -633,7 +719,7 @@
                 weight: 1.0, 
                 fill: true,
                 fillOpacity: 1,
-                fillColor: color_no_seleccionado,
+                fillColor: swatch_colors[0],
                 interactive: true,
             }
         }
@@ -652,7 +738,7 @@
         map.addLayer(layer_Usulutan_13);
         setBounds();
 
-        var swatch_colors = ['#220A29','#4C0B5F','#6A0888','#8904B1','#A901DB','#BF00FF','#D358F7','#DA81F5','#F2E0F7','#F8EFFB'];
+        
         for (let departamento in json_bd){     
             let promedio = json_bd[departamento].promedio;
             let color = {fillColor:''}
@@ -663,29 +749,29 @@
                 </tr>
                 <tr>
                     <td>${json_bd[departamento].nombre}</td>
-                    <td>${json_bd[departamento].promedio}</td>
+                    <td>${promedio}</td>
                 </tr>
             </table>`;
 
-            if(promedio >= 0.0 && promedio <=  1.0){ color.fillColor = swatch_colors[0]; }
+            if(promedio >= 0.0 && promedio <=  1.0){ color.fillColor = swatch_colors[1]; }
             else 
-            if(promedio > 1.0  && promedio <=  2.0){ color.fillColor = swatch_colors[1]; }
+            if(promedio > 1.0  && promedio <=  2.0){ color.fillColor = swatch_colors[2]; }
             else 
-            if(promedio > 2.0  && promedio <=  3.0){ color.fillColor = swatch_colors[2]; }
+            if(promedio > 2.0  && promedio <=  3.0){ color.fillColor = swatch_colors[3]; }
             else 
-            if(promedio > 3.0  && promedio <=  4.0){ color.fillColor = swatch_colors[3]; }
+            if(promedio > 3.0  && promedio <=  4.0){ color.fillColor = swatch_colors[4]; }
             else 
-            if(promedio > 4.0  && promedio <=  5.0){ color.fillColor = swatch_colors[4]; }
+            if(promedio > 4.0  && promedio <=  5.0){ color.fillColor = swatch_colors[5]; }
             else 
-            if(promedio > 5.0  && promedio <=  6.0){ color.fillColor = swatch_colors[5]; }
+            if(promedio > 5.0  && promedio <=  6.0){ color.fillColor = swatch_colors[6]; }
             else
-            if(promedio > 6.0  && promedio <=  7.0){ color.fillColor = swatch_colors[6]; }
+            if(promedio > 6.0  && promedio <=  7.0){ color.fillColor = swatch_colors[7]; }
             else
-            if(promedio > 7.0  && promedio <=  8.0){ color.fillColor = swatch_colors[7]; }
+            if(promedio > 7.0  && promedio <=  8.0){ color.fillColor = swatch_colors[8]; }
             else
-            if(promedio > 8.0  && promedio <=  9.0){ color.fillColor = swatch_colors[8]; }
+            if(promedio > 8.0  && promedio <=  9.0){ color.fillColor = swatch_colors[9]; }
             else
-            if(promedio > 9.0  && promedio <= 10.0){ color.fillColor = swatch_colors[9]; }
+            if(promedio > 9.0  && promedio <= 10.0){ color.fillColor = swatch_colors[10]; }
             
             switch(departamento){
                 case 'ahuachapan':
@@ -748,7 +834,6 @@
             
         }
 
-        
         var iconMarker = L.ExtraMarkers.icon({
             icon: 'fa-graduation-cap',
             markerColor: 'orange',
@@ -756,30 +841,26 @@
             prefix: 'fa',
             svg: true
         });
-        
-        var markers = L.markerClusterGroup();
-        markers.addLayer(L.marker([13.701339, -89.224438], {icon: iconMarker,title:"Monumento al Divino Salvador del Mundo"}).bindPopup("Monumento Nacional"));
-        markers.addLayer(L.marker([13.697685, -89.192060], {icon: iconMarker,title:"Palacio Nacional de El Salvador"}).bindPopup("Patrimonio Nacional"));
-        markers.addLayer(L.marker([13.684612, -89.196357], {icon: iconMarker,title:"Zoologico Nacional de El Salvador"}).bindPopup("Zoologico Nacional"));
-        markers.addLayer(L.marker([13.692573, -89.241904], {icon: iconMarker,title:"Museo de Arte de El Salvador"}).bindPopup("Museo Nacional"));
-        markers.addLayer(L.marker([13.722752, -89.211607], {icon: iconMarker,title:"Escuela Miguel Pinto"}).bindPopup("Escuela Publica"));
+        map.createPane('paneCircle');
+        let zIndex = map.getPane('paneCircle').style.zIndex = 399;
+        let markers = L.markerClusterGroup();
+        let point_layer_group = []
+        for(institucion in json_instituciones){
+            let data = json_instituciones[institucion].nombre
+            markers.addLayer(L.marker([json_instituciones[institucion].latitud,json_instituciones[institucion].longitud], {icon: iconMarker,title:data}).bindPopup(data));
+            point_layer_group.push(L.circle([json_instituciones[institucion].latitud,json_instituciones[institucion].longitud], {radius: 900, pane:"paneCircle",color:"#1DF1E8"}))
+        }
         map.addLayer(markers);
-        setBounds()
-        
-
+        let pointLayer = L.layerGroup(point_layer_group).addTo(map);
         function mapToCanvas(){
-            let mapDiv = document.getElementById('map').children[0]
-            let length = mapDiv.childElementCount-1
+            zIndex = 414
+            let map_div = document.getElementById('map').children[0]
             let canvas = document.getElementById('can')
             let ctx = canvas.getContext('2d')
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            for(i = 7; i <= length; i++){
-                ctx.drawImage(mapDiv.children[i].children[0],0,0);
-            }
-            let img = document.getElementById('img')
-            img.src = ""
-            img.src = canvas.toDataURL()
-           
+            ctx.clearRect(0, 0, canvas.width, canvas.height)
+            for(i = 7; i <= map_div.childElementCount-1; i++) ctx.drawImage(map_div.children[i].children[0],0,0,1000,700)
+            document.getElementById('img').src = canvas.toDataURL("image/png")
+            zIndex = 399
         }
         </script>
 
