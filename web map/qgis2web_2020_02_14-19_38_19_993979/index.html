@@ -11,10 +11,55 @@
         <link rel="stylesheet" href="css/leaflet.extra-markers.min.css">
         <link rel="stylesheet" type="text/css" href="css/MarkerCluster.css">
         <link rel="stylesheet" type="text/css" href="css/MarkerCluster.Default.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet-easybutton@2/src/easy-button.css">
         <style>
         #map {
             width: 1000px;
+            height: 710px;
+            border-style: ridge;
+            position: absolute;
+        }
+        #export {
+            width: 1000px;
             height: 700px;
+            z-index: -1
+        }
+        #swatch{
+            width: 63px;
+            height: 63px;
+        }
+        .empty{
+            background-color:#848484;
+        }
+        .color_0{
+            background-color:#220A29;
+        }
+        .color_1{
+            background-color:#4C0B5F;
+        }
+        .color_2{
+            background-color:#6A0888;
+        }
+        .color_3{
+            background-color:#8904B1;
+        }
+        .color_4{
+            background-color:#A901DB;
+        }
+        .color_5{
+            background-color:#BF00FF;
+        }
+        .color_6{
+            background-color:#D358F7;
+        }
+        .color_7{
+            background-color:#DA81F5;
+        }
+        .color_8{
+            background-color:#F2E0F7;
+        }
+        .color_9{
+            background-color:#F8EFFB;
         }
         </style>
         <title></title>
@@ -24,61 +69,62 @@
             <tr>
                 <td>
                     <div id="map">
-                    </div> 
+                    </div>
+                    <div id="export">
+                    </div>
                 </td>
-                <td>
+                <td style="padding-top: 17px;">
                     <table cellspacing="0">
                         <tr>
-                            <td style="background-color:#848484;width: 20px;height: 20px;"> </td>
+                            <td id="swatch" class="empty"> </td>
                             <td>
                                 <label style="font-weight: bold;"> No Seleccionado</label>
                             </td>
                         </tr>
                         <tr>
-                            <td style="background-color:#220A29;width: 20px;height: 20px;"> </td>
+                            <td id="swatch" class="color_0"> </td>
                             <td>0.00  - 1.0</td>
                         </tr>
                         <tr>
-                            <td style="background-color:#4C0B5F;width: 20px;height: 20px"> </td>
+                            <td id="swatch" class="color_1"> </td>
                             <td>1.01 -  2.0</td>
                         </tr>
                         <tr>
-                            <td style="background-color:#6A0888;width: 20px;height: 20px"> </td>
+                            <td id="swatch" class="color_2"> </td>
                             <td>2.01  - 3.0</td>
                         </tr>
                         <tr>
-                            <td style="background-color:#8904B1;width: 20px;height: 20px"> </td>
+                            <td id="swatch" class="color_3" > </td>
                             <td>3.01  - 4.0</td>
                         </tr>
                         <tr>
-                            <td style="background-color:#A901DB;width: 20px;height: 20px"> </td>
+                            <td id="swatch" class="color_4"> </td>
                             <td>4.01  - 5.0</td>
                         </tr>
                         <tr>
-                            <td style="background-color:#BF00FF;width: 20px;height: 20px"> </td>
+                            <td id="swatch" class="color_5"> </td>
                             <td>5.01  - 6.0</td>
                         </tr>
                         <tr>
-                            <td style="background-color:#D358F7;width: 20px;height: 20px"> </td>
+                            <td id="swatch" class="color_6"> </td>
                             <td>6.01  - 7.0</td>
                         </tr>
                         <tr>
-                            <td style="background-color:#DA81F5;width: 20px;height: 20px"> </td>
+                            <td id="swatch" class="color_7"> </td>
                             <td>7.01  - 8.0</td>
                         </tr>
                         <tr>
-                            <td style="background-color:#F2E0F7;width: 20px;height: 20px"> </td>
+                            <td id="swatch" class="color_8"> </td>
                             <td>8.01  - 9.0</td>
                         </tr>
                         <tr>
-                            <td style="background-color:#F8EFFB;width: 20px;height: 20px"> </td>
+                            <td id="swatch" class="color_9"> </td>
                             <td>9.01  - 10.0</td>
                         </tr>
                     </table>
                 </td>
             </tr>
         </table>
-        <button onclick="mapToCanvas()">Prueba de renderizado</button>
         <img src="" alt="#" id="img">
         <canvas id="can" width="1000" height="700" style="display: none;border: 1px solid black"></canvas>
         <script src="js/qgis2web_expressions.js"></script>
@@ -106,6 +152,7 @@
         <script src="data/Usulutan_13.js"></script>
         <script src="js/leaflet.extra-markers.min.js"></script>
         <script src="js/leaflet.markercluster.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/leaflet-easybutton@2/src/easy-button.js"></script>
         <script>
         var json_bd = {
             "ahuachapan": {
@@ -266,595 +313,610 @@
                 "latitud": 13.343166, 
             },
         }
-
-        var swatch_colors = ["#848484",'#220A29','#4C0B5F','#6A0888','#8904B1','#A901DB','#BF00FF','#D358F7','#DA81F5','#F2E0F7','#F8EFFB'];
         var map = L.map('map', {
+            zoomControl:true, maxZoom:28, minZoom:1,preferCanvas:false
+        }).fitBounds([[11.60198540893619,-91.09635936032133],[14.922833794083704,-86.21578951924415]]);
+
+        var map_canvas = L.map('export', {
             zoomControl:true, maxZoom:28, minZoom:1,preferCanvas:true
         }).fitBounds([[11.60198540893619,-91.09635936032133],[14.922833794083704,-86.21578951924415]]);
-        var hash = new L.Hash(map);
-        map.attributionControl.setPrefix('<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a> &middot; <a href="https://leafletjs.com" title="A JS library for interactive maps">Leaflet</a> &middot; <a href="https://qgis.org">QGIS</a>');
-        var bounds_group = new L.featureGroup([]);
-        function setBounds() {
-        }
-        function pop_Ahuachapan_0(feature, layer) {
-            var popupContent = '<table>\
-                    <tr>\
-                        <td colspan="2">' + (feature.properties['FCODE'] !== null ? Autolinker.link(feature.properties['FCODE'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
-                    </tr>\
-                    <tr>\
-                        <td colspan="2">' + (feature.properties['UID'] !== null ? Autolinker.link(feature.properties['UID'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
-                    </tr>\
-                    <tr>\
-                        <td colspan="2">' + (feature.properties['ASD'] !== null ? Autolinker.link(feature.properties['ASD'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
-                    </tr>\
-                    <tr>\
-                        <td colspan="2">' + (feature.properties['COD'] !== null ? Autolinker.link(feature.properties['COD'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
-                    </tr>\
-                    <tr>\
-                        <td colspan="2">' + (feature.properties['IC5'] !== null ? Autolinker.link(feature.properties['IC5'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
-                    </tr>\
-                    <tr>\
-                        <td colspan="2">' + (feature.properties['NA2'] !== null ? Autolinker.link(feature.properties['NA2'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
-                    </tr>\
-                    <tr>\
-                        <td colspan="2">' + (feature.properties['NA3'] !== null ? Autolinker.link(feature.properties['NA3'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
-                    </tr>\
-                    <tr>\
-                        <td colspan="2">' + (feature.properties['NAM'] !== null ? Autolinker.link(feature.properties['NAM'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
-                    </tr>\
-                    <tr>\
-                        <td colspan="2">' + (feature.properties['ACC'] !== null ? Autolinker.link(feature.properties['ACC'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
-                    </tr>\
-                    <tr>\
-                        <td colspan="2">' + (feature.properties['CCN'] !== null ? Autolinker.link(feature.properties['CCN'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
-                    </tr>\
-                    <tr>\
-                        <td colspan="2">' + (feature.properties['SDV'] !== null ? Autolinker.link(feature.properties['SDV'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
-                    </tr>\
-                    <tr>\
-                        <td colspan="2">' + (feature.properties['SDP'] !== null ? Autolinker.link(feature.properties['SDP'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
-                    </tr>\
-                    <tr>\
-                        <td colspan="2">' + (feature.properties['SRT'] !== null ? Autolinker.link(feature.properties['SRT'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
-                    </tr>\
-                    <tr>\
-                        <td colspan="2">' + (feature.properties['TXT'] !== null ? Autolinker.link(feature.properties['TXT'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
-                    </tr>\
-                    <tr>\
-                        <td colspan="2">' + (feature.properties['AREA_KM'] !== null ? Autolinker.link(feature.properties['AREA_KM'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
-                    </tr>\
-                    <tr>\
-                        <td colspan="2">' + (feature.properties['PERIMETRO'] !== null ? Autolinker.link(feature.properties['PERIMETRO'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
-                    </tr>\
-                </table>';
-            layer.bindPopup(popupContent, {maxHeight: 400});
-        }
-
-        function style_Ahuachapan_0_0() {
-            return {
-                pane: 'pane_Ahuachapan_0',
-                opacity: 1,
-                color: 'rgba(35,35,35,1.0)',
-                dashArray: '',
-                lineCap: 'butt',
-                lineJoin: 'miter',
-                weight: 1.0, 
-                fill: true,
-                fillOpacity: 1,
-                fillColor: swatch_colors[0],
-                interactive: true,
+              
+        function MapBuilding(map,text = ''){
+            var swatch_colors = ["#848484",'#220A29','#4C0B5F','#6A0888','#8904B1','#A901DB','#BF00FF','#D358F7','#DA81F5','#F2E0F7','#F8EFFB'];
+            var hash = new L.Hash(map);
+            map.attributionControl.setPrefix('<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a> &middot; <a href="https://leafletjs.com" title="A JS library for interactive maps">Leaflet</a> &middot; <a href="https://qgis.org">QGIS</a>');
+            var bounds_group = new L.featureGroup([]);
+            function setBounds() {
             }
-        }
-        map.createPane('pane_Ahuachapan_0');
-        map.getPane('pane_Ahuachapan_0').style.zIndex = 400;
-        map.getPane('pane_Ahuachapan_0').style['mix-blend-mode'] = 'normal';
-        var layer_Ahuachapan_0 = new L.geoJson(json_Ahuachapan_0, {
-            attribution: '',
-            interactive: false,
-            dataVar: 'json_Ahuachapan_0',
-            layerName: 'layer_Ahuachapan_0',
-            pane: 'pane_Ahuachapan_0',
-            onEachFeature: pop_Ahuachapan_0,
-            style: style_Ahuachapan_0_0,
-        });
-        bounds_group.addLayer(layer_Ahuachapan_0);
-        map.addLayer(layer_Ahuachapan_0);
-
-        function style_Cabanas_1_0() {
-            return {
-                pane: 'pane_Cabanas_1',
-                opacity: 1,
-                color: 'rgba(35,35,35,1.0)',
-                dashArray: '',
-                lineCap: 'butt',
-                lineJoin: 'miter',
-                weight: 1.0, 
-                fill: true,
-                fillOpacity: 1,
-                fillColor: swatch_colors[0],
-                interactive: true,
+            function pop_Ahuachapan_0(feature, layer) {
+                var popupContent = '<table>\
+                        <tr>\
+                            <td colspan="2">' + (feature.properties['FCODE'] !== null ? Autolinker.link(feature.properties['FCODE'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                        </tr>\
+                        <tr>\
+                            <td colspan="2">' + (feature.properties['UID'] !== null ? Autolinker.link(feature.properties['UID'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                        </tr>\
+                        <tr>\
+                            <td colspan="2">' + (feature.properties['ASD'] !== null ? Autolinker.link(feature.properties['ASD'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                        </tr>\
+                        <tr>\
+                            <td colspan="2">' + (feature.properties['COD'] !== null ? Autolinker.link(feature.properties['COD'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                        </tr>\
+                        <tr>\
+                            <td colspan="2">' + (feature.properties['IC5'] !== null ? Autolinker.link(feature.properties['IC5'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                        </tr>\
+                        <tr>\
+                            <td colspan="2">' + (feature.properties['NA2'] !== null ? Autolinker.link(feature.properties['NA2'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                        </tr>\
+                        <tr>\
+                            <td colspan="2">' + (feature.properties['NA3'] !== null ? Autolinker.link(feature.properties['NA3'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                        </tr>\
+                        <tr>\
+                            <td colspan="2">' + (feature.properties['NAM'] !== null ? Autolinker.link(feature.properties['NAM'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                        </tr>\
+                        <tr>\
+                            <td colspan="2">' + (feature.properties['ACC'] !== null ? Autolinker.link(feature.properties['ACC'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                        </tr>\
+                        <tr>\
+                            <td colspan="2">' + (feature.properties['CCN'] !== null ? Autolinker.link(feature.properties['CCN'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                        </tr>\
+                        <tr>\
+                            <td colspan="2">' + (feature.properties['SDV'] !== null ? Autolinker.link(feature.properties['SDV'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                        </tr>\
+                        <tr>\
+                            <td colspan="2">' + (feature.properties['SDP'] !== null ? Autolinker.link(feature.properties['SDP'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                        </tr>\
+                        <tr>\
+                            <td colspan="2">' + (feature.properties['SRT'] !== null ? Autolinker.link(feature.properties['SRT'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                        </tr>\
+                        <tr>\
+                            <td colspan="2">' + (feature.properties['TXT'] !== null ? Autolinker.link(feature.properties['TXT'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                        </tr>\
+                        <tr>\
+                            <td colspan="2">' + (feature.properties['AREA_KM'] !== null ? Autolinker.link(feature.properties['AREA_KM'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                        </tr>\
+                        <tr>\
+                            <td colspan="2">' + (feature.properties['PERIMETRO'] !== null ? Autolinker.link(feature.properties['PERIMETRO'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                        </tr>\
+                    </table>';
+                layer.bindPopup(popupContent, {maxHeight: 400});
             }
-        }
-        map.createPane('pane_Cabanas_1');
-        map.getPane('pane_Cabanas_1').style.zIndex = 401;
-        map.getPane('pane_Cabanas_1').style['mix-blend-mode'] = 'normal';
-        var layer_Cabanas_1 = new L.geoJson(json_Cabanas_1, {
-            attribution: '',
-            interactive: false,
-            dataVar: 'json_Cabanas_1',
-            layerName: 'layer_Cabanas_1',
-            pane: 'pane_Cabanas_1',
-            style: style_Cabanas_1_0,
-        });
-        bounds_group.addLayer(layer_Cabanas_1);
-        map.addLayer(layer_Cabanas_1);
 
-        function style_chalatenango_2_0() {
-            return {
-                pane: 'pane_chalatenango_2',
-                opacity: 1,
-                color: 'rgba(35,35,35,1.0)',
-                dashArray: '',
-                lineCap: 'butt',
-                lineJoin: 'miter',
-                weight: 1.0, 
-                fill: true,
-                fillOpacity: 1,
-                fillColor: swatch_colors[0],
-                interactive: true,
+            function style_Ahuachapan_0_0() {
+                return {
+                    pane: 'pane_Ahuachapan_0'+text,
+                    opacity: 1,
+                    color: 'rgba(35,35,35,1.0)',
+                    dashArray: '',
+                    lineCap: 'butt',
+                    lineJoin: 'miter',
+                    weight: 1.0, 
+                    fill: true,
+                    fillOpacity: 1,
+                    fillColor: swatch_colors[0],
+                    interactive: true,
+                }
             }
-        }
-        map.createPane('pane_chalatenango_2');
-        map.getPane('pane_chalatenango_2').style.zIndex = 402;
-        map.getPane('pane_chalatenango_2').style['mix-blend-mode'] = 'normal';
-        var layer_chalatenango_2 = new L.geoJson(json_chalatenango_2, {
-            attribution: '',
-            interactive: false,
-            dataVar: 'json_chalatenango_2',
-            layerName: 'layer_chalatenango_2',
-            pane: 'pane_chalatenango_2',
-            style: style_chalatenango_2_0,
-        });
-        bounds_group.addLayer(layer_chalatenango_2);
-        map.addLayer(layer_chalatenango_2);
+            map.createPane('pane_Ahuachapan_0'+text);
+            map.getPane('pane_Ahuachapan_0'+text).style.zIndex = 400;
+            map.getPane('pane_Ahuachapan_0'+text).style['mix-blend-mode'] = 'normal';
+            var layer_Ahuachapan_0 = new L.geoJson(json_Ahuachapan_0, {
+                attribution: '',
+                interactive: false,
+                dataVar: 'json_Ahuachapan_0',
+                layerName: 'layer_Ahuachapan_0',
+                pane: 'pane_Ahuachapan_0'+text,
+                onEachFeature: pop_Ahuachapan_0,
+                style: style_Ahuachapan_0_0,
+            });
+            bounds_group.addLayer(layer_Ahuachapan_0);
+            map.addLayer(layer_Ahuachapan_0);
 
-        function style_Cuscatlan_3_0() {
-            return {
-                pane: 'pane_Cuscatlan_3',
-                opacity: 1,
-                color: 'rgba(35,35,35,1.0)',
-                dashArray: '',
-                lineCap: 'butt',
-                lineJoin: 'miter',
-                weight: 1.0, 
-                fill: true,
-                fillOpacity: 1,
-                fillColor: swatch_colors[0],
-                interactive: true,
+            function style_Cabanas_1_0() {
+                return {
+                    pane: 'pane_Cabanas_1'+text,
+                    opacity: 1,
+                    color: 'rgba(35,35,35,1.0)',
+                    dashArray: '',
+                    lineCap: 'butt',
+                    lineJoin: 'miter',
+                    weight: 1.0, 
+                    fill: true,
+                    fillOpacity: 1,
+                    fillColor: swatch_colors[0],
+                    interactive: true,
+                }
             }
-        }
-        map.createPane('pane_Cuscatlan_3');
-        map.getPane('pane_Cuscatlan_3').style.zIndex = 403;
-        map.getPane('pane_Cuscatlan_3').style['mix-blend-mode'] = 'normal';
-        var layer_Cuscatlan_3 = new L.geoJson(json_Cuscatlan_3, {
-            attribution: '',
-            interactive: false,
-            dataVar: 'json_Cuscatlan_3',
-            layerName: 'layer_Cuscatlan_3',
-            pane: 'pane_Cuscatlan_3',
-            style: style_Cuscatlan_3_0,
-        });
-        bounds_group.addLayer(layer_Cuscatlan_3);
-        map.addLayer(layer_Cuscatlan_3);
+            map.createPane('pane_Cabanas_1'+text);
+            map.getPane('pane_Cabanas_1'+text).style.zIndex = 401;
+            map.getPane('pane_Cabanas_1'+text).style['mix-blend-mode'] = 'normal';
+            var layer_Cabanas_1 = new L.geoJson(json_Cabanas_1, {
+                attribution: '',
+                interactive: false,
+                dataVar: 'json_Cabanas_1',
+                layerName: 'layer_Cabanas_1',
+                pane: 'pane_Cabanas_1'+text,
+                style: style_Cabanas_1_0,
+            });
+            bounds_group.addLayer(layer_Cabanas_1);
+            map.addLayer(layer_Cabanas_1);
 
-        function style_LaLibertad_4_0() {
-            return {
-                pane: 'pane_LaLibertad_4',
-                opacity: 1,
-                color: 'rgba(35,35,35,1.0)',
-                dashArray: '',
-                lineCap: 'butt',
-                lineJoin: 'miter',
-                weight: 1.0, 
-                fill: true,
-                fillOpacity: 1,
-                fillColor: swatch_colors[0],
-                interactive: true,
+            function style_chalatenango_2_0() {
+                return {
+                    pane: 'pane_chalatenango_2'+text,
+                    opacity: 1,
+                    color: 'rgba(35,35,35,1.0)',
+                    dashArray: '',
+                    lineCap: 'butt',
+                    lineJoin: 'miter',
+                    weight: 1.0, 
+                    fill: true,
+                    fillOpacity: 1,
+                    fillColor: swatch_colors[0],
+                    interactive: true,
+                }
             }
-        }
-        map.createPane('pane_LaLibertad_4');
-        map.getPane('pane_LaLibertad_4').style.zIndex = 404;
-        map.getPane('pane_LaLibertad_4').style['mix-blend-mode'] = 'normal';
-        var layer_LaLibertad_4 = new L.geoJson(json_LaLibertad_4, {
-            attribution: '',
-            interactive: false,
-            dataVar: 'json_LaLibertad_4',
-            layerName: 'layer_LaLibertad_4',
-            pane: 'pane_LaLibertad_4',
-            style: style_LaLibertad_4_0,
-        });
-        bounds_group.addLayer(layer_LaLibertad_4);
-        map.addLayer(layer_LaLibertad_4);
+            map.createPane('pane_chalatenango_2'+text);
+            map.getPane('pane_chalatenango_2'+text).style.zIndex = 402;
+            map.getPane('pane_chalatenango_2'+text).style['mix-blend-mode'] = 'normal';
+            var layer_chalatenango_2 = new L.geoJson(json_chalatenango_2, {
+                attribution: '',
+                interactive: false,
+                dataVar: 'json_chalatenango_2',
+                layerName: 'layer_chalatenango_2',
+                pane: 'pane_chalatenango_2'+text,
+                style: style_chalatenango_2_0,
+            });
+            bounds_group.addLayer(layer_chalatenango_2);
+            map.addLayer(layer_chalatenango_2);
 
-        function style_LaPaz_5_0() {
-            return {
-                pane: 'pane_LaPaz_5',
-                opacity: 1,
-                color: 'rgba(35,35,35,1.0)',
-                dashArray: '',
-                lineCap: 'butt',
-                lineJoin: 'miter',
-                weight: 1.0, 
-                fill: true,
-                fillOpacity: 1,
-                fillColor: swatch_colors[0],
-                interactive: true,
+            function style_Cuscatlan_3_0() {
+                return {
+                    pane: 'pane_Cuscatlan_3'+text,
+                    opacity: 1,
+                    color: 'rgba(35,35,35,1.0)',
+                    dashArray: '',
+                    lineCap: 'butt',
+                    lineJoin: 'miter',
+                    weight: 1.0, 
+                    fill: true,
+                    fillOpacity: 1,
+                    fillColor: swatch_colors[0],
+                    interactive: true,
+                }
             }
-        }
-        map.createPane('pane_LaPaz_5');
-        map.getPane('pane_LaPaz_5').style.zIndex = 405;
-        map.getPane('pane_LaPaz_5').style['mix-blend-mode'] = 'normal';
-        var layer_LaPaz_5 = new L.geoJson(json_LaPaz_5, {
-            attribution: '',
-            interactive: false,
-            dataVar: 'json_LaPaz_5',
-            layerName: 'layer_LaPaz_5',
-            pane: 'pane_LaPaz_5',
-            style: style_LaPaz_5_0,
-        });
-        bounds_group.addLayer(layer_LaPaz_5);
-        map.addLayer(layer_LaPaz_5);
+            map.createPane('pane_Cuscatlan_3'+text);
+            map.getPane('pane_Cuscatlan_3'+text).style.zIndex = 403;
+            map.getPane('pane_Cuscatlan_3'+text).style['mix-blend-mode'] = 'normal';
+            var layer_Cuscatlan_3 = new L.geoJson(json_Cuscatlan_3, {
+                attribution: '',
+                interactive: false,
+                dataVar: 'json_Cuscatlan_3',
+                layerName: 'layer_Cuscatlan_3',
+                pane: 'pane_Cuscatlan_3'+text,
+                style: style_Cuscatlan_3_0,
+            });
+            bounds_group.addLayer(layer_Cuscatlan_3);
+            map.addLayer(layer_Cuscatlan_3);
 
-        function style_LaUnion_6_0() {
-            return {
-                pane: 'pane_LaUnion_6',
-                opacity: 1,
-                color: 'rgba(35,35,35,1.0)',
-                dashArray: '',
-                lineCap: 'butt',
-                lineJoin: 'miter',
-                weight: 1.0, 
-                fill: true,
-                fillOpacity: 1,
-                fillColor: swatch_colors[0],
-                interactive: true,
+            function style_LaLibertad_4_0() {
+                return {
+                    pane: 'pane_LaLibertad_4'+text,
+                    opacity: 1,
+                    color: 'rgba(35,35,35,1.0)',
+                    dashArray: '',
+                    lineCap: 'butt',
+                    lineJoin: 'miter',
+                    weight: 1.0, 
+                    fill: true,
+                    fillOpacity: 1,
+                    fillColor: swatch_colors[0],
+                    interactive: true,
+                }
             }
-        }
-        map.createPane('pane_LaUnion_6');
-        map.getPane('pane_LaUnion_6').style.zIndex = 406;
-        map.getPane('pane_LaUnion_6').style['mix-blend-mode'] = 'normal';
-        var layer_LaUnion_6 = new L.geoJson(json_LaUnion_6, {
-            attribution: '',
-            interactive: false,
-            dataVar: 'json_LaUnion_6',
-            layerName: 'layer_LaUnion_6',
-            pane: 'pane_LaUnion_6',
-            style: style_LaUnion_6_0,
-        });
-        bounds_group.addLayer(layer_LaUnion_6);
-        map.addLayer(layer_LaUnion_6);
+            map.createPane('pane_LaLibertad_4'+text);
+            map.getPane('pane_LaLibertad_4'+text).style.zIndex = 404;
+            map.getPane('pane_LaLibertad_4'+text).style['mix-blend-mode'] = 'normal';
+            var layer_LaLibertad_4 = new L.geoJson(json_LaLibertad_4, {
+                attribution: '',
+                interactive: false,
+                dataVar: 'json_LaLibertad_4',
+                layerName: 'layer_LaLibertad_4',
+                pane: 'pane_LaLibertad_4'+text,
+                style: style_LaLibertad_4_0,
+            });
+            bounds_group.addLayer(layer_LaLibertad_4);
+            map.addLayer(layer_LaLibertad_4);
 
-        function style_Morazan_7_0() {
-            return {
-                pane: 'pane_Morazan_7',
-                opacity: 1,
-                color: 'rgba(35,35,35,1.0)',
-                dashArray: '',
-                lineCap: 'butt',
-                lineJoin: 'miter',
-                weight: 1.0, 
-                fill: true,
-                fillOpacity: 1,
-                fillColor: swatch_colors[0],
-                interactive: true,
+            function style_LaPaz_5_0() {
+                return {
+                    pane: 'pane_LaPaz_5'+text,
+                    opacity: 1,
+                    color: 'rgba(35,35,35,1.0)',
+                    dashArray: '',
+                    lineCap: 'butt',
+                    lineJoin: 'miter',
+                    weight: 1.0, 
+                    fill: true,
+                    fillOpacity: 1,
+                    fillColor: swatch_colors[0],
+                    interactive: true,
+                }
             }
-        }
-        map.createPane('pane_Morazan_7');
-        map.getPane('pane_Morazan_7').style.zIndex = 407;
-        map.getPane('pane_Morazan_7').style['mix-blend-mode'] = 'normal';
-        var layer_Morazan_7 = new L.geoJson(json_Morazan_7, {
-            attribution: '',
-            interactive: false,
-            dataVar: 'json_Morazan_7',
-            layerName: 'layer_Morazan_7',
-            pane: 'pane_Morazan_7',
-            style: style_Morazan_7_0,
-        });
-        bounds_group.addLayer(layer_Morazan_7);
-        map.addLayer(layer_Morazan_7);
+            map.createPane('pane_LaPaz_5'+text);
+            map.getPane('pane_LaPaz_5'+text).style.zIndex = 405;
+            map.getPane('pane_LaPaz_5'+text).style['mix-blend-mode'] = 'normal';
+            var layer_LaPaz_5 = new L.geoJson(json_LaPaz_5, {
+                attribution: '',
+                interactive: false,
+                dataVar: 'json_LaPaz_5',
+                layerName: 'layer_LaPaz_5',
+                pane: 'pane_LaPaz_5'+text,
+                style: style_LaPaz_5_0,
+            });
+            bounds_group.addLayer(layer_LaPaz_5);
+            map.addLayer(layer_LaPaz_5);
 
-        function style_SanMiguel_8_0() {
-            return {
-                pane: 'pane_SanMiguel_8',
-                opacity: 1,
-                color: 'rgba(35,35,35,1.0)',
-                dashArray: '',
-                lineCap: 'butt',
-                lineJoin: 'miter',
-                weight: 1.0, 
-                fill: true,
-                fillOpacity: 1,
-                fillColor: swatch_colors[0],
-                interactive: true,
+            function style_LaUnion_6_0() {
+                return {
+                    pane: 'pane_LaUnion_6'+text,
+                    opacity: 1,
+                    color: 'rgba(35,35,35,1.0)',
+                    dashArray: '',
+                    lineCap: 'butt',
+                    lineJoin: 'miter',
+                    weight: 1.0, 
+                    fill: true,
+                    fillOpacity: 1,
+                    fillColor: swatch_colors[0],
+                    interactive: true,
+                }
             }
-        }
-        map.createPane('pane_SanMiguel_8');
-        map.getPane('pane_SanMiguel_8').style.zIndex = 408;
-        map.getPane('pane_SanMiguel_8').style['mix-blend-mode'] = 'normal';
-        var layer_SanMiguel_8 = new L.geoJson(json_SanMiguel_8, {
-            attribution: '',
-            interactive: false,
-            dataVar: 'json_SanMiguel_8',
-            layerName: 'layer_SanMiguel_8',
-            pane: 'pane_SanMiguel_8',
-            style: style_SanMiguel_8_0,
-        });
-        bounds_group.addLayer(layer_SanMiguel_8);
-        map.addLayer(layer_SanMiguel_8);
+            map.createPane('pane_LaUnion_6'+text);
+            map.getPane('pane_LaUnion_6'+text).style.zIndex = 406;
+            map.getPane('pane_LaUnion_6'+text).style['mix-blend-mode'] = 'normal';
+            var layer_LaUnion_6 = new L.geoJson(json_LaUnion_6, {
+                attribution: '',
+                interactive: false,
+                dataVar: 'json_LaUnion_6',
+                layerName: 'layer_LaUnion_6',
+                pane: 'pane_LaUnion_6'+text,
+                style: style_LaUnion_6_0,
+            });
+            bounds_group.addLayer(layer_LaUnion_6);
+            map.addLayer(layer_LaUnion_6);
 
-        function style_SanSalvador_9_0() {
-            return {
-                pane: 'pane_SanSalvador_9',
-                opacity: 1,
-                color: 'rgba(35,35,35,1.0)',
-                dashArray: '',
-                lineCap: 'butt',
-                lineJoin: 'miter',
-                weight: 1.0, 
-                fill: true,
-                fillOpacity: 1,
-                fillColor: swatch_colors[0],
-                interactive: true,
+            function style_Morazan_7_0() {
+                return {
+                    pane: 'pane_Morazan_7'+text,
+                    opacity: 1,
+                    color: 'rgba(35,35,35,1.0)',
+                    dashArray: '',
+                    lineCap: 'butt',
+                    lineJoin: 'miter',
+                    weight: 1.0, 
+                    fill: true,
+                    fillOpacity: 1,
+                    fillColor: swatch_colors[0],
+                    interactive: true,
+                }
             }
-        }
-        map.createPane('pane_SanSalvador_9');
-        map.getPane('pane_SanSalvador_9').style.zIndex = 409;
-        map.getPane('pane_SanSalvador_9').style['mix-blend-mode'] = 'normal';
-        var layer_SanSalvador_9 = new L.geoJson(json_SanSalvador_9, {
-            attribution: '',
-            interactive: false,
-            dataVar: 'json_SanSalvador_9',
-            layerName: 'layer_SanSalvador_9',
-            pane: 'pane_SanSalvador_9',
-            style: style_SanSalvador_9_0,
-        });
-        bounds_group.addLayer(layer_SanSalvador_9);
-        map.addLayer(layer_SanSalvador_9);
+            map.createPane('pane_Morazan_7'+text);
+            map.getPane('pane_Morazan_7'+text).style.zIndex = 407;
+            map.getPane('pane_Morazan_7'+text).style['mix-blend-mode'] = 'normal';
+            var layer_Morazan_7 = new L.geoJson(json_Morazan_7, {
+                attribution: '',
+                interactive: false,
+                dataVar: 'json_Morazan_7',
+                layerName: 'layer_Morazan_7',
+                pane: 'pane_Morazan_7'+text,
+                style: style_Morazan_7_0,
+            });
+            bounds_group.addLayer(layer_Morazan_7);
+            map.addLayer(layer_Morazan_7);
 
-        function style_Santa_Ana_10_0() {
-            return {
-                pane: 'pane_Santa_Ana_10',
-                opacity: 1,
-                color: 'rgba(35,35,35,1.0)',
-                dashArray: '',
-                lineCap: 'butt',
-                lineJoin: 'miter',
-                weight: 1.0, 
-                fill: true,
-                fillOpacity: 1,
-                fillColor: swatch_colors[0],
-                interactive: true,
+            function style_SanMiguel_8_0() {
+                return {
+                    pane: 'pane_SanMiguel_8'+text,
+                    opacity: 1,
+                    color: 'rgba(35,35,35,1.0)',
+                    dashArray: '',
+                    lineCap: 'butt',
+                    lineJoin: 'miter',
+                    weight: 1.0, 
+                    fill: true,
+                    fillOpacity: 1,
+                    fillColor: swatch_colors[0],
+                    interactive: true,
+                }
             }
-        }
-        map.createPane('pane_Santa_Ana_10');
-        map.getPane('pane_Santa_Ana_10').style.zIndex = 410;
-        map.getPane('pane_Santa_Ana_10').style['mix-blend-mode'] = 'normal';
-        var layer_Santa_Ana_10 = new L.geoJson(json_Santa_Ana_10, {
-            attribution: '',
-            interactive: false,
-            dataVar: 'json_Santa_Ana_10',
-            layerName: 'layer_Santa_Ana_10',
-            pane: 'pane_Santa_Ana_10',
-            style: style_Santa_Ana_10_0,
-        });
-        bounds_group.addLayer(layer_Santa_Ana_10);
-        map.addLayer(layer_Santa_Ana_10);
+            map.createPane('pane_SanMiguel_8'+text);
+            map.getPane('pane_SanMiguel_8'+text).style.zIndex = 408;
+            map.getPane('pane_SanMiguel_8'+text).style['mix-blend-mode'] = 'normal';
+            var layer_SanMiguel_8 = new L.geoJson(json_SanMiguel_8, {
+                attribution: '',
+                interactive: false,
+                dataVar: 'json_SanMiguel_8',
+                layerName: 'layer_SanMiguel_8',
+                pane: 'pane_SanMiguel_8'+text,
+                style: style_SanMiguel_8_0,
+            });
+            bounds_group.addLayer(layer_SanMiguel_8);
+            map.addLayer(layer_SanMiguel_8);
 
-        function style_SanVicente_11_0() {
-            return {
-                pane: 'pane_SanVicente_11',
-                opacity: 1,
-                color: 'rgba(35,35,35,1.0)',
-                dashArray: '',
-                lineCap: 'butt',
-                lineJoin: 'miter',
-                weight: 1.0, 
-                fill: true,
-                fillOpacity: 1,
-                fillColor: swatch_colors[0],
-                interactive: true,
+            function style_SanSalvador_9_0() {
+                return {
+                    pane: 'pane_SanSalvador_9'+text,
+                    opacity: 1,
+                    color: 'rgba(35,35,35,1.0)',
+                    dashArray: '',
+                    lineCap: 'butt',
+                    lineJoin: 'miter',
+                    weight: 1.0, 
+                    fill: true,
+                    fillOpacity: 1,
+                    fillColor: swatch_colors[0],
+                    interactive: true,
+                }
             }
-        }
-        map.createPane('pane_SanVicente_11');
-        map.getPane('pane_SanVicente_11').style.zIndex = 411;
-        map.getPane('pane_SanVicente_11').style['mix-blend-mode'] = 'normal';
-        var layer_SanVicente_11 = new L.geoJson(json_SanVicente_11, {
-            attribution: '',
-            interactive: false,
-            dataVar: 'json_SanVicente_11',
-            layerName: 'layer_SanVicente_11',
-            pane: 'pane_SanVicente_11',
-            style: style_SanVicente_11_0,
-        });
-        bounds_group.addLayer(layer_SanVicente_11);
-        map.addLayer(layer_SanVicente_11);
+            map.createPane('pane_SanSalvador_9'+text);
+            map.getPane('pane_SanSalvador_9'+text).style.zIndex = 409;
+            map.getPane('pane_SanSalvador_9'+text).style['mix-blend-mode'] = 'normal';
+            var layer_SanSalvador_9 = new L.geoJson(json_SanSalvador_9, {
+                attribution: '',
+                interactive: false,
+                dataVar: 'json_SanSalvador_9',
+                layerName: 'layer_SanSalvador_9',
+                pane: 'pane_SanSalvador_9'+text,
+                style: style_SanSalvador_9_0,
+            });
+            bounds_group.addLayer(layer_SanSalvador_9);
+            map.addLayer(layer_SanSalvador_9);
 
-        function style_Sonsonate_12_0() {
-            return {
-                pane: 'pane_Sonsonate_12',
-                opacity: 1,
-                color: 'rgba(35,35,35,1.0)',
-                dashArray: '',
-                lineCap: 'butt',
-                lineJoin: 'miter',
-                weight: 1.0, 
-                fill: true,
-                fillOpacity: 1,
-                fillColor: swatch_colors[0],
-                interactive: true,
+            function style_Santa_Ana_10_0() {
+                return {
+                    pane: 'pane_Santa_Ana_10'+text,
+                    opacity: 1,
+                    color: 'rgba(35,35,35,1.0)',
+                    dashArray: '',
+                    lineCap: 'butt',
+                    lineJoin: 'miter',
+                    weight: 1.0, 
+                    fill: true,
+                    fillOpacity: 1,
+                    fillColor: swatch_colors[0],
+                    interactive: true,
+                }
             }
-        }
-        map.createPane('pane_Sonsonate_12');
-        map.getPane('pane_Sonsonate_12').style.zIndex = 412;
-        map.getPane('pane_Sonsonate_12').style['mix-blend-mode'] = 'normal';
-        var layer_Sonsonate_12 = new L.geoJson(json_Sonsonate_12, {
-            attribution: '',
-            interactive: false,
-            dataVar: 'json_Sonsonate_12',
-            layerName: 'layer_Sonsonate_12',
-            pane: 'pane_Sonsonate_12',
-            style: style_Sonsonate_12_0,
-        });
-        bounds_group.addLayer(layer_Sonsonate_12);
-        map.addLayer(layer_Sonsonate_12);
-        
-        function style_Usulutan_13_0() {
-            return {
-                pane: 'pane_Usulutan_13',
-                opacity: 1,
-                color: 'rgba(35,35,35,1.0)',
-                dashArray: '',
-                lineCap: 'butt',
-                lineJoin: 'miter',
-                weight: 1.0, 
-                fill: true,
-                fillOpacity: 1,
-                fillColor: swatch_colors[0],
-                interactive: true,
+            map.createPane('pane_Santa_Ana_10'+text);
+            map.getPane('pane_Santa_Ana_10'+text).style.zIndex = 410;
+            map.getPane('pane_Santa_Ana_10'+text).style['mix-blend-mode'] = 'normal';
+            var layer_Santa_Ana_10 = new L.geoJson(json_Santa_Ana_10, {
+                attribution: '',
+                interactive: false,
+                dataVar: 'json_Santa_Ana_10',
+                layerName: 'layer_Santa_Ana_10',
+                pane: 'pane_Santa_Ana_10'+text,
+                style: style_Santa_Ana_10_0,
+            });
+            bounds_group.addLayer(layer_Santa_Ana_10);
+            map.addLayer(layer_Santa_Ana_10);
+
+            function style_SanVicente_11_0() {
+                return {
+                    pane: 'pane_SanVicente_11'+text,
+                    opacity: 1,
+                    color: 'rgba(35,35,35,1.0)',
+                    dashArray: '',
+                    lineCap: 'butt',
+                    lineJoin: 'miter',
+                    weight: 1.0, 
+                    fill: true,
+                    fillOpacity: 1,
+                    fillColor: swatch_colors[0],
+                    interactive: true,
+                }
             }
-        }
-        map.createPane('pane_Usulutan_13');
-        map.getPane('pane_Usulutan_13').style.zIndex = 413;
-        map.getPane('pane_Usulutan_13').style['mix-blend-mode'] = 'normal';
-        var layer_Usulutan_13 = new L.geoJson(json_Usulutan_13, {
-            attribution: '',
-            interactive: false,
-            dataVar: 'json_Usulutan_13',
-            layerName: 'layer_Usulutan_13',
-            pane: 'pane_Usulutan_13',
-            style: style_Usulutan_13_0,
-        });
-        bounds_group.addLayer(layer_Usulutan_13);
-        map.addLayer(layer_Usulutan_13);
-        setBounds();
+            map.createPane('pane_SanVicente_11'+text);
+            map.getPane('pane_SanVicente_11'+text).style.zIndex = 411;
+            map.getPane('pane_SanVicente_11'+text).style['mix-blend-mode'] = 'normal';
+            var layer_SanVicente_11 = new L.geoJson(json_SanVicente_11, {
+                attribution: '',
+                interactive: false,
+                dataVar: 'json_SanVicente_11',
+                layerName: 'layer_SanVicente_11',
+                pane: 'pane_SanVicente_11'+text,
+                style: style_SanVicente_11_0,
+            });
+            bounds_group.addLayer(layer_SanVicente_11);
+            map.addLayer(layer_SanVicente_11);
 
-        
-        for (let departamento in json_bd){     
-            let promedio = json_bd[departamento].promedio;
-            let color = {fillColor:''}
-            let informacion =   ""+
-            `<table style="width:100%">
-                <tr>
-                    <th>Departamento</th>
-                </tr>
-                <tr>
-                    <td>${json_bd[departamento].nombre}</td>
-                    <td>${promedio}</td>
-                </tr>
-            </table>`;
-
-            if(promedio >= 0.0 && promedio <=  1.0){ color.fillColor = swatch_colors[1]; }
-            else 
-            if(promedio > 1.0  && promedio <=  2.0){ color.fillColor = swatch_colors[2]; }
-            else 
-            if(promedio > 2.0  && promedio <=  3.0){ color.fillColor = swatch_colors[3]; }
-            else 
-            if(promedio > 3.0  && promedio <=  4.0){ color.fillColor = swatch_colors[4]; }
-            else 
-            if(promedio > 4.0  && promedio <=  5.0){ color.fillColor = swatch_colors[5]; }
-            else 
-            if(promedio > 5.0  && promedio <=  6.0){ color.fillColor = swatch_colors[6]; }
-            else
-            if(promedio > 6.0  && promedio <=  7.0){ color.fillColor = swatch_colors[7]; }
-            else
-            if(promedio > 7.0  && promedio <=  8.0){ color.fillColor = swatch_colors[8]; }
-            else
-            if(promedio > 8.0  && promedio <=  9.0){ color.fillColor = swatch_colors[9]; }
-            else
-            if(promedio > 9.0  && promedio <= 10.0){ color.fillColor = swatch_colors[10]; }
+            function style_Sonsonate_12_0() {
+                return {
+                    pane: 'pane_Sonsonate_12'+text,
+                    opacity: 1,
+                    color: 'rgba(35,35,35,1.0)',
+                    dashArray: '',
+                    lineCap: 'butt',
+                    lineJoin: 'miter',
+                    weight: 1.0, 
+                    fill: true,
+                    fillOpacity: 1,
+                    fillColor: swatch_colors[0],
+                    interactive: true,
+                }
+            }
+            map.createPane('pane_Sonsonate_12'+text);
+            map.getPane('pane_Sonsonate_12'+text).style.zIndex = 412;
+            map.getPane('pane_Sonsonate_12'+text).style['mix-blend-mode'] = 'normal';
+            var layer_Sonsonate_12 = new L.geoJson(json_Sonsonate_12, {
+                attribution: '',
+                interactive: false,
+                dataVar: 'json_Sonsonate_12',
+                layerName: 'layer_Sonsonate_12',
+                pane: 'pane_Sonsonate_12'+text,
+                style: style_Sonsonate_12_0,
+            });
+            bounds_group.addLayer(layer_Sonsonate_12);
+            map.addLayer(layer_Sonsonate_12);
             
-            switch(departamento){
-                case 'ahuachapan':
-                    layer_Ahuachapan_0.setStyle(color);
-                    layer_Ahuachapan_0.bindPopup(informacion);
-                    break;
-                case 'santa_ana':
-                    layer_Santa_Ana_10.setStyle(color);
-                    layer_Santa_Ana_10.bindPopup(informacion);
-                    break;
-                case 'sonsonate':
-                    layer_Sonsonate_12.setStyle(color);
-                    layer_Sonsonate_12.bindPopup(informacion);
-                    break;
-                case 'la_libertad':
-                    layer_LaLibertad_4.setStyle(color)
-                    layer_LaLibertad_4.bindPopup(informacion);
-                    break;
-                case 'chalatenango':
-                    layer_chalatenango_2.setStyle(color);
-                    layer_chalatenango_2.bindPopup(informacion);
-                    break;
-                case 'san_salvador':
-                    layer_SanSalvador_9.setStyle(color);
-                    layer_SanSalvador_9.bindPopup(informacion);
-                    break;
-                case 'cuscatlan':
-                    layer_Cuscatlan_3.setStyle(color);
-                    layer_Cuscatlan_3.bindPopup(informacion);
-                    break;
-                case 'cabanas':
-                    layer_Cabanas_1.setStyle(color);
-                    layer_Cabanas_1.bindPopup(informacion);
-                    break;
-                case 'la_paz':
-                    layer_LaPaz_5.setStyle(color);
-                    layer_LaPaz_5.bindPopup(informacion);
-                    break;
-                case 'san_vicente':
-                    layer_SanVicente_11.setStyle(color);
-                    layer_SanVicente_11.bindPopup(informacion);
-                    break;
-                case 'usulutan':
-                    layer_Usulutan_13.setStyle(color);
-                    layer_Usulutan_13.bindPopup(informacion);
-                    break;
-                case 'san_miguel':
-                    layer_SanMiguel_8.setStyle(color);
-                    layer_SanMiguel_8.bindPopup(informacion);
-                    break;
-                case 'morazan':
-                    layer_Morazan_7.setStyle(color);
-                    layer_Morazan_7.bindPopup(informacion);
-                    break;
-                case 'la_union':
-                    layer_LaUnion_6.setStyle(color);
-                    layer_LaUnion_6.bindPopup(informacion);
-                    break;
+            function style_Usulutan_13_0() {
+                return {
+                    pane: 'pane_Usulutan_13'+text,
+                    opacity: 1,
+                    color: 'rgba(35,35,35,1.0)',
+                    dashArray: '',
+                    lineCap: 'butt',
+                    lineJoin: 'miter',
+                    weight: 1.0, 
+                    fill: true,
+                    fillOpacity: 1,
+                    fillColor: swatch_colors[0],
+                    interactive: true,
+                }
             }
+            map.createPane('pane_Usulutan_13'+text);
+            map.getPane('pane_Usulutan_13'+text).style.zIndex = 413;
+            map.getPane('pane_Usulutan_13'+text).style['mix-blend-mode'] = 'normal';
+            var layer_Usulutan_13 = new L.geoJson(json_Usulutan_13, {
+                attribution: '',
+                interactive: false,
+                dataVar: 'json_Usulutan_13',
+                layerName: 'layer_Usulutan_13',
+                pane: 'pane_Usulutan_13'+text,
+                style: style_Usulutan_13_0,
+            });
+            bounds_group.addLayer(layer_Usulutan_13);
+            map.addLayer(layer_Usulutan_13);
+            setBounds();
             
+            for (let departamento in json_bd){     
+                let promedio = json_bd[departamento].promedio;
+                let color = {fillColor:''}
+                let informacion = ""+
+                `<table style="width:100%">
+                    <tr>
+                        <th>Departamento</th>
+                    </tr>
+                    <tr>
+                        <td>${json_bd[departamento].nombre}</td>
+                        <td>${promedio}</td>
+                    </tr>
+                </table>`;
+
+                if(promedio >= 0.0 && promedio <=  1.0){ color.fillColor = swatch_colors[1]; }
+                else 
+                if(promedio > 1.0  && promedio <=  2.0){ color.fillColor = swatch_colors[2]; }
+                else 
+                if(promedio > 2.0  && promedio <=  3.0){ color.fillColor = swatch_colors[3]; }
+                else 
+                if(promedio > 3.0  && promedio <=  4.0){ color.fillColor = swatch_colors[4]; }
+                else 
+                if(promedio > 4.0  && promedio <=  5.0){ color.fillColor = swatch_colors[5]; }
+                else 
+                if(promedio > 5.0  && promedio <=  6.0){ color.fillColor = swatch_colors[6]; }
+                else
+                if(promedio > 6.0  && promedio <=  7.0){ color.fillColor = swatch_colors[7]; }
+                else
+                if(promedio > 7.0  && promedio <=  8.0){ color.fillColor = swatch_colors[8]; }
+                else
+                if(promedio > 8.0  && promedio <=  9.0){ color.fillColor = swatch_colors[9]; }
+                else
+                if(promedio > 9.0  && promedio <= 10.0){ color.fillColor = swatch_colors[10]; }
+                
+                switch(departamento){
+                    case 'ahuachapan':
+                        layer_Ahuachapan_0.setStyle(color);
+                        layer_Ahuachapan_0.bindPopup(informacion,{maxHeight: 400});
+                        break;
+                    case 'santa_ana':
+                        layer_Santa_Ana_10.setStyle(color);
+                        layer_Santa_Ana_10.bindPopup(informacion);
+                        break;
+                    case 'sonsonate':
+                        layer_Sonsonate_12.setStyle(color);
+                        layer_Sonsonate_12.bindPopup(informacion);
+                        break;
+                    case 'la_libertad':
+                        layer_LaLibertad_4.setStyle(color)
+                        layer_LaLibertad_4.bindPopup(informacion);
+                        break;
+                    case 'chalatenango':
+                        layer_chalatenango_2.setStyle(color);
+                        layer_chalatenango_2.bindPopup(informacion);
+                        break;
+                    case 'san_salvador':
+                        layer_SanSalvador_9.setStyle(color);
+                        layer_SanSalvador_9.bindPopup(informacion);
+                        break;
+                    case 'cuscatlan':
+                        layer_Cuscatlan_3.setStyle(color);
+                        layer_Cuscatlan_3.bindPopup(informacion);
+                        break;
+                    case 'cabanas':
+                        layer_Cabanas_1.setStyle(color);
+                        layer_Cabanas_1.bindPopup(informacion);
+                        break;
+                    case 'la_paz':
+                        layer_LaPaz_5.setStyle(color);
+                        layer_LaPaz_5.bindPopup(informacion);
+                        break;
+                    case 'san_vicente':
+                        layer_SanVicente_11.setStyle(color);
+                        layer_SanVicente_11.bindPopup(informacion);
+                        break;
+                    case 'usulutan':
+                        layer_Usulutan_13.setStyle(color);
+                        layer_Usulutan_13.bindPopup(informacion);
+                        break;
+                    case 'san_miguel':
+                        layer_SanMiguel_8.setStyle(color);
+                        layer_SanMiguel_8.bindPopup(informacion);
+                        break;
+                    case 'morazan':
+                        layer_Morazan_7.setStyle(color);
+                        layer_Morazan_7.bindPopup(informacion);
+                        break;
+                    case 'la_union':
+                        layer_LaUnion_6.setStyle(color);
+                        layer_LaUnion_6.bindPopup(informacion);
+                        break;
+                }
+                
+            }
+
+            var iconMarker = L.ExtraMarkers.icon({
+                icon: 'fa-graduation-cap',
+                markerColor: 'orange',
+                shape: 'square',
+                prefix: 'fa',
+                svg: true
+            });
+            if(text == '_canvas'){
+                map.createPane('paneCircle');
+                var zIndex = map.getPane('paneCircle').style.zIndex = 399;   
+            }
+            var markers = L.markerClusterGroup();
+            var point_layer_group = []
+            for(institucion in json_instituciones){
+                let data = json_instituciones[institucion].nombre
+                markers.addLayer(L.marker([json_instituciones[institucion].latitud,json_instituciones[institucion].longitud], {icon: iconMarker,title:data}).bindPopup(data));
+                if(text == '_canvas'){
+                    point_layer_group.push(L.circle([json_instituciones[institucion].latitud,json_instituciones[institucion].longitud], {radius: 900, pane:"paneCircle",color:"#1DF1E8"}))
+                }
+            }
+            map.addLayer(markers);
+            if(text == '_canvas') L.layerGroup(point_layer_group).addTo(map);
+            if(text == ''){
+                L.easyButton( 'fa fa-file-pdf', function(){
+                    mapToCanvas()
+                }).addTo(map);
+            }
         }
 
-        var iconMarker = L.ExtraMarkers.icon({
-            icon: 'fa-graduation-cap',
-            markerColor: 'orange',
-            shape: 'square',
-            prefix: 'fa',
-            svg: true
-        });
-        map.createPane('paneCircle');
-        let zIndex = map.getPane('paneCircle').style.zIndex = 399;
-        let markers = L.markerClusterGroup();
-        let point_layer_group = []
-        for(institucion in json_instituciones){
-            let data = json_instituciones[institucion].nombre
-            markers.addLayer(L.marker([json_instituciones[institucion].latitud,json_instituciones[institucion].longitud], {icon: iconMarker,title:data}).bindPopup(data));
-            point_layer_group.push(L.circle([json_instituciones[institucion].latitud,json_instituciones[institucion].longitud], {radius: 900, pane:"paneCircle",color:"#1DF1E8"}))
-        }
-        map.addLayer(markers);
-        let pointLayer = L.layerGroup(point_layer_group).addTo(map);
         function mapToCanvas(){
             zIndex = 414
-            let map_div = document.getElementById('map').children[0]
+            let map_div = document.getElementById('export').children[0]
             let canvas = document.getElementById('can')
             let ctx = canvas.getContext('2d')
             ctx.clearRect(0, 0, canvas.width, canvas.height)
@@ -862,7 +924,8 @@
             document.getElementById('img').src = canvas.toDataURL("image/png")
             zIndex = 399
         }
+        MapBuilding(map)
+        MapBuilding(map_canvas,'_canvas')
         </script>
-
     </body>
 </html>
